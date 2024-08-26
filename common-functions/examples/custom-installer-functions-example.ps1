@@ -5,8 +5,12 @@ Invoke-RestMethod -Uri "https://github.com/kcarbonaro/eyetech-public/blob/ca8323
 $tempDir = "c:\temp"
 $installerLockFilename = "installer.lck"
 $InstallerLockExpiry = 2
-$appDisplayName = "*Libre*"
-$installerFilename = "LibreOffice.msi"
+$appDisplayName = "*Lenovo System Update"
+$installerFilename = "system_update_5.08.03.59.exe"
+
+$downloadUrl = "https://download.lenovo.com/pccbbs/thinkvantage_en/system_update_5.08.03.59.exe"
+$downloadPath = "$tempDir\system_update_5.08.03.59.exe"
+$timeoutSec = 600
 
 # Create Temp directory if it does not exist
 Create-TempDirectory -TempDir $tempDir
@@ -23,6 +27,8 @@ Create-CustomInstallerLock -FilePath "$tempDir\$installerLockFilename"
 #
 # Proceed with installation steps here...
 #
+Download-File -Url $downloadUrl -DestinationPath $downloadPath -TimeoutSec $timeoutSec -Overwrite
+Start-Process -FilePath $downloadPath -ArgumentList "/VERYSILENT /NORESTART" -Wait
 
 # Remove installer lock after installation
 Remove-CustomInstallerLock -FilePath "$tempDir\$installerLockFilename"
