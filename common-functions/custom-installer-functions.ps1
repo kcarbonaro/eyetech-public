@@ -128,3 +128,45 @@ function Remove-InstallationFile {
         Write-Output "Error during cleanup: $_"
     }
 }
+
+function Download-File {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]$Url,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string]$DestinationPath = $(Join-Path -Path $env:TEMP -ChildPath (Split-Path -Leaf $Url)),
+
+        [Parameter(Mandatory = $false)]
+        [int]$TimeoutSec = 300,
+
+        [Parameter(Mandatory = $false)]
+        [string]$UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+
+        [Parameter(Mandatory = $false)]
+        [Switch]$Overwrite
+    )
+
+    # Check if the destination file exists and if overwrite is not allowed
+    if (Test-Path -Path $DestinationPath) {
+        if (-not $Overwrite.IsPresent) {
+            Write-Warning "The file '$DestinationPath' already exists. Use -Overwrite to overwrite it."
+            return
+        }
+    }
+
+    try {
+        $webClient = New-Object System.Net.WebClient
+        $webClient.Headers["User-Agent"] = $UserAgent
+        $webClient.DownloadFile($Url, $DestinationPath)
+
+        Write-Host "File downloaded successfully to '$DestinationPath'."
+    }
+    catch {
+        Write-Error "Failed to download file from '$Url'. Error: $_"
+    }
+    finally {
+        $webClient.Dispose()
+    }
+}
