@@ -1,0 +1,32 @@
+# ==================================================
+# Example: Search-ADUsername
+# ==================================================
+# Replace these with appropriate values
+$domain = "domain.local"
+$username = "username"
+$password = "password"
+$samAccountName = "accountname"
+
+$userInfo = Search-ADUsername -Domain $domain -Username $username -Password $password -SamAccountName $samAccountName
+if ($userInfo) {
+    Write-Output "Display Name: $($userInfo.DisplayName)"
+    Write-Output "Designation: $($userInfo.Designation)"
+}
+
+# ==================================================
+# Example: Search-ADComputerName
+# ==================================================
+# Replace these with appropriate values
+$domain = "domain.local"
+$username = "username"
+$password = "password"
+$computerName = "computername"
+
+$computerInfo = Search-ADComputerName -Domain $domain -Username $username -Password $password -ComputerName $computerName
+
+if ($computerInfo -ne $null) {
+    Write-Output "Computer Name: $($computerInfo.Name)"
+    Write-Output "Operating System: $($computerInfo.OperatingSystem)"
+    Write-Output "OS Version: $($computerInfo.OperatingSystemVersion)"
+    Write-Output "Last Logon Time: $($computerInfo.LastLogonTimestamp)"
+}
